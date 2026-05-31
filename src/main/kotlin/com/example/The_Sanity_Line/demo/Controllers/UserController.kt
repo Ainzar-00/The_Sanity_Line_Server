@@ -19,7 +19,7 @@ class UserController(private val userService: UserService) {
             email = request.email,
             displayName = request.displayName,
             photoUrl = request.photoUrl,
-            provider = Provider.valueOf(request.provider),  // "GOOGLE" → Provider.GOOGLE
+            provider =  Provider.valueOf(request.provider),  // "GOOGLE" → Provider.GOOGLE
             timezone = request.timezone,
             isActive = request.isActive,
         )

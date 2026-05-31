@@ -1,8 +1,8 @@
 package com.example.The_Sanity_Line.demo.Controllers
 
-
 import com.example.The_Sanity_Line.demo.Entities.UserProfile
 import com.example.The_Sanity_Line.demo.Service.UserProfileService
+import com.example.The_Sanity_Line.demo.dtos.OnboardingProgressRequest
 import com.example.The_Sanity_Line.demo.dtos.UserProfileRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,12 +26,10 @@ class UserProfileController(
     fun getAllOnboarded(): ResponseEntity<List<UserProfile>> =
         ResponseEntity.ok(service.getAllOnboarded())
 
-    // ✅ DTO instead of entity
     @PostMapping
     fun create(@RequestBody request: UserProfileRequest): ResponseEntity<UserProfile> =
         ResponseEntity.status(HttpStatus.CREATED).body(service.create(request))
 
-    // ✅ DTO instead of entity
     @PutMapping("/user/{userId}")
     fun update(
         @PathVariable userId: String,
@@ -39,14 +37,22 @@ class UserProfileController(
     ): ResponseEntity<UserProfile> =
         ResponseEntity.ok(service.update(userId, request))
 
-    // ✅ DTO instead of entity
     @PutMapping("/upsert")
     fun upsert(@RequestBody request: UserProfileRequest): ResponseEntity<UserProfile> =
         ResponseEntity.ok(service.upsert(request))
 
-    @PatchMapping("/user/{userId}/onboarding")
-    fun completeOnboarding(@PathVariable userId: String): ResponseEntity<UserProfile> =
-        ResponseEntity.ok(service.completeOnboarding(userId))
+    // Called by the client after each pillar is completed.
+    // Body example after 3rd pillar:
+    //   { "finishedOnboarding": ["app_intro", "nutrition", "sleep"] }
+    // Body example after last pillar:
+    //   { "finishedOnboarding": ["app_intro", ..., "avoiding_harmful_substances"],
+    //     "onboardingCompletedAt": "2025-05-28T14:30:00" }
+    @PatchMapping("/user/{userId}/onboarding-progress")
+    fun updateOnboardingProgress(
+        @PathVariable userId: String,
+        @RequestBody request: OnboardingProgressRequest,
+    ): ResponseEntity<UserProfile> =
+        ResponseEntity.ok(service.updateOnboardingProgress(userId, request))
 
     @DeleteMapping("/user/{userId}")
     fun delete(@PathVariable userId: String): ResponseEntity<Unit> {

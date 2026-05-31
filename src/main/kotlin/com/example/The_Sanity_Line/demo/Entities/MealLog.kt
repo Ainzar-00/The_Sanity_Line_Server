@@ -54,11 +54,8 @@ data class MealLog(
 
     @Convert(converter = JsonNodeConverter::class)
     @Column(name = "plant_species_list", columnDefinition = "json")
-    val plantSpeciesList: JsonNode? = null,
+    val plantSpeciesList: JsonNode? = null
 
-    @Column(name = "trigger_food_flag", nullable = false)
-    val triggerFoodFlag: Boolean = false,
 
-    @Column(name = "trigger_food_note", columnDefinition = "TEXT")
-    val triggerFoodNote: String? = null
+
 )

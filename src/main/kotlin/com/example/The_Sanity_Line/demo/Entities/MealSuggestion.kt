@@ -3,16 +3,16 @@ package com.example.The_Sanity_Line.demo.Entities
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.UUID
 import org.hibernate.annotations.CreationTimestamp
 import tools.jackson.databind.JsonNode
 
 @Entity
 @Table(name = "meal_suggestions")
 data class MealSuggestion(
+
     @Id
     @Column(name = "suggestion_id", length = 36)
-    val suggestionId: String = UUID.randomUUID().toString(),
+    val suggestionId: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -73,12 +73,5 @@ data class MealSuggestion(
     val tryptophanMg: BigDecimal? = null,
 
     @Column(name = "user_accepted", nullable = false)
-    val userAccepted: Boolean = false,
-
-    @Column(name = "user_modified", nullable = false)
-    val userModified: Boolean = false,
-
-    @Convert(converter = JsonNodeConverter::class)
-    @Column(name = "modified_version", columnDefinition = "json")
-    val modifiedVersion: JsonNode? = null
+    val userAccepted: Boolean = false
 )

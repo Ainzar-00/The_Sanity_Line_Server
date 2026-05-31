@@ -17,7 +17,6 @@ data class UserProfile(
     @Column(name = "profile_id", length = 36, nullable = false, updatable = false)
     val profileId: String = UUID.randomUUID().toString(),
 
-    // 🔥 REAL relationship instead of userId
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
@@ -60,6 +59,13 @@ data class UserProfile(
     @Column(name = "alcohol_weekly_units")
     val alcoholWeeklyUnits: Int? = null,
 
+    // Tracks which onboarding sections the user has completed.
+    // Stored as a JSON array of OnboardingSection enum string values,
+    // e.g. ["app_intro", "nutrition", "sleep"]
+    @Convert(converter = JsonNodeConverter::class)
+    @Column(name = "finished_onboarding", columnDefinition = "json")
+    val finishedOnboarding: JsonNode = ObjectMapper().createArrayNode(),
+
     @Column(name = "onboarding_completed_at")
     val onboardingCompletedAt: LocalDateTime? = null,
 
@@ -70,4 +76,14 @@ data class UserProfile(
 
 enum class Sex {
     male, female, other, prefer_not_to_say
+}
+
+enum class OnboardingSection {
+    app_intro,
+    nutrition,
+    sleep,
+    physical_activity,
+    social_connections,
+    mind_and_body,
+    avoiding_harmful_substances
 }
