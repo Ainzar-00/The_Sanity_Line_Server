@@ -6,6 +6,7 @@ import com.example.The_Sanity_Line.demo.Repository.UserRepository
 import com.example.The_Sanity_Line.demo.dtos.MentalConditionRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.JsonNode
 
 @Service
 @Transactional(readOnly = true)
@@ -32,13 +33,65 @@ class MentalConditionService(
                 conditionName = request.conditionName,
                 severity = request.severity,
                 durationMonths = request.durationMonths,
-                priorityNutrients = request.priorityNutrients,
+                priorityNutrients = request.priorityNutrients as JsonNode?,
                 restrictCaffeine = request.restrictCaffeine,
                 restrictSugar = request.restrictSugar,
                 addVitaminD = request.addVitaminD,
                 addAdaptogens = request.addAdaptogens,
                 gradualFiber = request.gradualFiber,
                 active = request.active,
+            )
+        )
+    }
+
+    @Transactional
+    fun saveOrUpdate(request: MentalConditionRequest): MentalCondition {
+
+        val user = userRepository.findById(request.userId)
+            .orElseThrow { NoSuchElementException("User not found: ${request.userId}") }
+
+        val existing = request.conditionId?.let {
+            repository.findById(it).orElse(null)
+        }
+
+        // 🔁 UPDATE
+        if (existing != null) {
+            return repository.save(
+                existing.copy(
+                    conditionName = request.conditionName,
+                    severity = request.severity,
+                    durationMonths = request.durationMonths,
+                    priorityNutrients = request.priorityNutrients as JsonNode?,
+                    restrictCaffeine = request.restrictCaffeine,
+                    restrictSugar = request.restrictSugar,
+                    addVitaminD = request.addVitaminD,
+                    addAdaptogens = request.addAdaptogens,
+                    gradualFiber = request.gradualFiber,
+                    active = request.active
+                )
+            )
+        }
+
+        // ➕ CREATE (with uniqueness check)
+        if (repository.existsByUser_UserIdAndConditionName(request.userId, request.conditionName)) {
+            throw IllegalStateException(
+                "Condition '${request.conditionName}' already exists for user: ${request.userId}"
+            )
+        }
+
+        return repository.save(
+            MentalCondition(
+                user = user,
+                conditionName = request.conditionName,
+                severity = request.severity,
+                durationMonths = request.durationMonths,
+                priorityNutrients = request.priorityNutrients as JsonNode?,
+                restrictCaffeine = request.restrictCaffeine,
+                restrictSugar = request.restrictSugar,
+                addVitaminD = request.addVitaminD,
+                addAdaptogens = request.addAdaptogens,
+                gradualFiber = request.gradualFiber,
+                active = request.active
             )
         )
     }

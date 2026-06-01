@@ -34,17 +34,18 @@ data class UserProfileRequest(
 )
 
 data class MentalConditionRequest(
+    val conditionId: String?, // 👈 nullable for create
     val userId: String,
     val conditionName: String,
-    val severity: Int? = null,
-    val durationMonths: Int? = null,
-    val priorityNutrients: JsonNode? = null,
+    val severity: Int?,
+    val durationMonths: Int?,
+    val priorityNutrients: String?,
     val restrictCaffeine: Boolean = false,
     val restrictSugar: Boolean = false,
     val addVitaminD: Boolean = false,
     val addAdaptogens: Boolean = false,
     val gradualFiber: Boolean = false,
-    val active: Boolean = true,
+    val active: Boolean = true
 )
 
 data class MorningCheckinRequest(

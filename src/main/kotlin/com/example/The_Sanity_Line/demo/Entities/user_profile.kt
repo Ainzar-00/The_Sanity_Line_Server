@@ -75,7 +75,7 @@ data class UserProfile(
 )
 
 enum class Sex {
-    male, female, other, prefer_not_to_say
+    male, female
 }
 
 enum class OnboardingSection {

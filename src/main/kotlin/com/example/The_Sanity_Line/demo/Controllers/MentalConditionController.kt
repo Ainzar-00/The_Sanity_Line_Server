@@ -6,15 +6,15 @@ import com.example.The_Sanity_Line.demo.dtos.MentalConditionRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
 @RestController
 @RequestMapping("/api/v1/mental-conditions")
 class MentalConditionController(
     private val service: MentalConditionService,
 ) {
     @PostMapping
-    fun create(@RequestBody request: MentalConditionRequest): ResponseEntity<MentalCondition> =
-        ResponseEntity.status(HttpStatus.CREATED).body(service.create(request))
+    fun saveOrUpdate(@RequestBody request: MentalConditionRequest): ResponseEntity<MentalCondition> =
+        ResponseEntity.status(HttpStatus.CREATED)
+            .body(service.saveOrUpdate(request))
 
     @GetMapping("/user/{userId}")
     fun getByUserId(@PathVariable userId: String): ResponseEntity<List<MentalCondition>> =
